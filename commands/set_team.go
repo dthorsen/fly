@@ -39,6 +39,7 @@ func (command *SetTeamCommand) Execute([]string) error {
 
 	fmt.Println("Team Name:", command.TeamName)
 	fmt.Println("Basic Auth:", authMethodStatusDescription(command.Authentication.BasicAuth.IsConfigured()))
+	fmt.Println("LDAP Basic Auth:", authMethodStatusDescription(command.Authentication.LdapBasicAuth.IsConfigured()))
 	fmt.Println("GitHub Auth:", authMethodStatusDescription(command.ProviderAuth["github"].IsConfigured()))
 	fmt.Println("GitLab Auth:", authMethodStatusDescription(command.ProviderAuth["gitlab"].IsConfigured()))
 	fmt.Println("UAA Auth:", authMethodStatusDescription(command.ProviderAuth["uaa"].IsConfigured()))
@@ -63,6 +64,23 @@ func (command *SetTeamCommand) Execute([]string) error {
 		team.BasicAuth = &atc.BasicAuth{
 			BasicAuthUsername: command.Authentication.BasicAuth.Username,
 			BasicAuthPassword: command.Authentication.BasicAuth.Password,
+		}
+	}
+
+	if command.Authentication.LdapBasicAuth.IsConfigured() {
+		team.LdapBasicAuth = &atc.LdapBasicAuth{
+			Server:                command.Authentication.LdapBasicAuth.Server,
+			Port:                  command.Authentication.LdapBasicAuth.Port,
+			TLSEnabled:            command.Authentication.LdapBasicAuth.TLSEnabled,
+			TLSInsecureSkipVerify: command.Authentication.LdapBasicAuth.TLSInsecureSkipVerify,
+			TLSCA:         command.Authentication.LdapBasicAuth.TLSCA,
+			BindUsername:  command.Authentication.LdapBasicAuth.BindUsername,
+			BindPassword:  command.Authentication.LdapBasicAuth.BindPassword,
+			UserBaseDN:    command.Authentication.LdapBasicAuth.UserBaseDN,
+			GroupBaseDN:   command.Authentication.LdapBasicAuth.GroupBaseDN,
+			GroupDN:       command.Authentication.LdapBasicAuth.GroupDN,
+			UserAttribute: command.Authentication.LdapBasicAuth.UserAttribute,
+			GroupFilter:   command.Authentication.LdapBasicAuth.GroupFilter,
 		}
 	}
 
